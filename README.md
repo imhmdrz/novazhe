@@ -1,54 +1,68 @@
-This is a Kotlin Multiplatform project targeting Android, iOS, Server.
+# NoVazhe | نوواژه
 
-* [/composeApp](./composeApp/src) is for code that will be shared across your Compose Multiplatform applications.
-  It contains several subfolders:
-  - [commonMain](./composeApp/src/commonMain/kotlin) is for code that’s common for all targets.
-  - Other folders are for Kotlin code that will be compiled for only the platform indicated in the folder name.
-    For example, if you want to use Apple’s CoreCrypto for the iOS part of your Kotlin app,
-    the [iosMain](./composeApp/src/iosMain/kotlin) folder would be the right place for such calls.
-    Similarly, if you want to edit the Desktop (JVM) specific part, the [jvmMain](./composeApp/src/jvmMain/kotlin)
-    folder is the appropriate location.
+A Kotlin Multiplatform learning app with child profiles, vocabulary activities, mini-games, and a Ktor backend.
 
-* [/iosApp](./iosApp/iosApp) contains iOS applications. Even if you’re sharing your UI with Compose Multiplatform,
-  you need this entry point for your iOS app. This is also where you should add SwiftUI code for your project.
+## Overview
 
-* [/server](./server/src/main/kotlin) is for the Ktor server application.
+NoVazhe combines child profiles, vocabulary content, custom words, and learning activities in a Kotlin Multiplatform project. The repository includes a shared Compose UI, Android and iOS entry points, and a Ktor server for authentication, content, and progress.
 
-* [/shared](./shared/src) is for the code that will be shared between all targets in the project.
-  The most important subfolder is [commonMain](./shared/src/commonMain/kotlin). If preferred, you
-  can add code to the platform-specific folders here too.
+## Highlights
 
-### Build and Run Android Application
+- Parent and child flows with individual child profiles.
+- Custom vocabulary with image and audio interfaces.
+- Quiz, memory, color-sorting, shadow-matching, and face-game code.
+- Server-side progress tracking.
+- Shared networking and models across platform targets.
 
-To build and run the development version of the Android app, use the run configuration from the run widget
-in your IDE’s toolbar or build it directly from the terminal:
-- on macOS/Linux
-  ```shell
-  ./gradlew :composeApp:assembleDebug
-  ```
-- on Windows
-  ```shell
-  .\gradlew.bat :composeApp:assembleDebug
-  ```
+**Stack:** Kotlin · Compose Multiplatform · Ktor · Koin · Exposed · H2 / PostgreSQL
 
-### Build and Run Server
+## Project structure
 
-To build and run the development version of the server, use the run configuration from the run widget
-in your IDE’s toolbar or run it directly from the terminal:
-- on macOS/Linux
-  ```shell
-  JWT_SECRET="local-dev-secret-change-me" ./gradlew :server:run
-  ```
-- on Windows
-  ```shell
-  .\gradlew.bat :server:run
-  ```
+| Module | Responsibility |
+| --- | --- |
+| `composeApp/` | Shared Compose UI and platform integrations |
+| `shared/` | Models, repositories, and HTTP client |
+| `iosApp/` | iOS application entry point |
+| `server/` | Ktor API, persistence, and content serving |
 
-### Build and Run iOS Application
+## Getting started
 
-To build and run the development version of the iOS app, use the run configuration from the run widget
-in your IDE’s toolbar or open the [/iosApp](./iosApp) directory in Xcode and run it from there.
+Clone the default development branch:
 
----
+```bash
+git clone --branch new https://github.com/imhmdrz/novazhe.git
+cd novazhe
+```
 
-Learn more about [Kotlin Multiplatform](https://www.jetbrains.com/help/kotlin-multiplatform-dev/get-started.html)…
+### Android
+
+Use Android Studio with JDK 17 and Android SDK 36. The app targets devices running API 24 or newer.
+
+```bash
+./gradlew :composeApp:assembleDebug
+```
+
+Run the app from Android Studio after Gradle sync. On Windows, use `gradlew.bat`.
+
+### Server
+
+On macOS or Linux:
+
+```bash
+export JWT_SECRET="$(openssl rand -hex 32)"
+./gradlew :server:run
+```
+
+For Windows, set a nonempty `JWT_SECRET` environment variable before running `gradlew.bat :server:run`.
+
+The server defaults to a local H2 database. PostgreSQL configuration is available in `server/src/main/kotlin/mohaamadreza/saemipour/no/vazheh/database/DatabaseConfig.kt` and is selected with `USE_POSTGRES=true`.
+
+Review the platform implementation of `getBaseUrl()` when connecting a device to your server. An Android emulator typically reaches the host at `http://10.0.2.2:8080`; an iOS simulator can use `http://localhost:8080`. A physical device needs a reachable host address.
+
+Content files and their public URLs are configured separately. Follow [the content setup guide](server/content/README.md) for `CONTENT_DIR`, `CONTENT_BASE_URL`, and seeding details.
+
+### iOS
+
+Use macOS and Xcode. Open the project under `iosApp/`, configure signing for your development team if needed, and run an iOS target.
+
+Platform targets are configured in the build files; runtime behavior should be checked separately on each platform.
